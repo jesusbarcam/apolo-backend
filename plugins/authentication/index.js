@@ -3,11 +3,6 @@
 const fp = require('fastify-plugin');
 const secretWord = 'supersecret';
 
-/**
- *
- * @param {*} fastify
- * @param {*} options
- */
 async function authentication(fastify, options) {
   fastify
     .register(require('fastify-jwt'), { secret: secretWord })

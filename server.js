@@ -9,33 +9,10 @@ const fastify = require('fastify')({
 // Declare all routes
 fastify.register(require('@plugins/authentication')).after(() => {
   fastify
+    .register(require('@routes/users'))
     .get('/', async (request, replay) => {
       return { greetings: 'Vinyl Deejays' };
-    })
-    .post(
-      '/users',
-      { preValidation: fastify.auth([fastify.validateJWT]) },
-      (request, reply) => {
-        console.log(request.body);
-        reply.send({
-          users: [
-            {
-              name: 'Jesus Barajas Camacho',
-              email: 'jesusbarcam@gmail.com',
-            },
-            {
-              name: 'David Sanchez Camino',
-              email: 'davidsanchez@gmail.com',
-            },
-            {
-              name: 'Angel Luis Gutierrez',
-              email: 'angelluis@gmail.com',
-            },
-            { name: 'Sergio Araujo', email: 'yegui@gmail.com' },
-          ],
-        });
-      }
-    );
+    });
 });
 
 // Init function, launch fastify server
