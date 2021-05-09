@@ -1,31 +1,12 @@
 'use strict';
 
 //const { usersService } = require('usersService');
+const { publicUser, publicUsers, usersSchema } = require('./users.schema');
 
 module.exports = async function (fastify, options) {
-  fastify.addSchema({
-    $id: 'publicUser',
-    type: 'object',
-    properties: {
-      username: { type: 'string' },
-      email: { type: 'string' },
-      tlf: { type: 'number' },
-    },
-  });
-
-  fastify.addSchema({
-    $id: 'users',
-    type: 'array',
-    items: { $ref: 'publicUser#' },
-  });
-
-  const schema = {
-    response: {
-      200: { $ref: 'users#' },
-    },
-  };
-
-  fastify.get('/users', { schema }, async (request, reply) => {
+  fastify.addSchema(publicUser);
+  fastify.addSchema(publicUsers);
+  fastify.get('/users', { usersSchema }, async (request, reply) => {
     // TODO: Obtener el listado de usuarios desde
     // nuestro servicio usersService.
     return await [
