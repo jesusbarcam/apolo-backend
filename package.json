@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/jesusbarcam/vinyl-backend/issues"
   },
-  "homepage": "https://github.com/jesusbarcam/vinyl-backend#readme"
+  "homepage": "https://github.com/jesusbarcam/vinyl-backend#readme",
+  "dependencies": {
+    "@plugins/authentication": "file:plugins/authentication",
+    "fastify": "^3.15.1",
+    "pino-pretty": "^4.7.1"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
 }
