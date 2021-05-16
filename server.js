@@ -6,6 +6,8 @@ const fastify = require('fastify')({
   logger: { prettyPrint: true },
 });
 
+fastify.register(require('@plugins/mongo-db-connector'));
+
 // Declare all routes
 fastify.register(require('@plugins/authentication')).after(() => {
   fastify

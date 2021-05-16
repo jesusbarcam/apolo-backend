@@ -10,6 +10,8 @@ const {
 } = require('./users.schema');
 
 module.exports = async function (fastify, options) {
+  const collection = fastify.mongo.db.collection('users');
+
   fastify.addSchema(publicUser);
   fastify.addSchema(publicUsers);
   fastify.addSchema(createUser);
@@ -18,48 +20,45 @@ module.exports = async function (fastify, options) {
     '/users',
     { createUserResponseSchema },
     async (request, reply) => {
-      const { username, password, fullName } = request.body;
-      fastify.log.info('El usuario ha sido creado');
+      const userToInsert = { ...request.body };
+      fastify.log.info(
+        `Intentando crear el usuario: ${userToInsert.toString()}`
+      );
       reply.code(201);
-      return await {
-        username: 'jesusBarcam',
-        fullName: 'Jesus Barajas Camacho',
-        email: 'jesusbarcam@gmail.com',
-        tlf: 657448534,
-      };
+      return await collection.insertOne(userToInsert);
     }
   );
+
+  fastify.put('/users', async (request, reply) => {
+    const updatedUser = { ...request.body };
+    fastify.log.info(`Update User: ${updatedUser.username}`);
+    reply.code(201);
+    return await collection.updateOne(
+      { username: 'jesusbarcam' },
+      { $set: updatedUser }
+    );
+  });
+
+  fastify.get('/users/:username', async (request, reply) => {
+    const requestedUser = await collection.findOne({
+      username: request.params.username,
+    });
+    if (!requestedUser) {
+      reply.code(404);
+      throw new Error('No Document found');
+    } // If
+    return requestedUser;
+  });
+
   // TODO: Crear el registro de usuarios
   // nuevos tanto en el flujo de fastify como
   // añadirlos a traves de un servicio usersService
   fastify.get('/users', { usersResponseSchema }, async (request, reply) => {
-    // TODO: Obtener el listado de usuarios desde
-    // nuestro servicio usersService.
-    return await [
-      {
-        username: 'jesusBarcam',
-        fullName: 'Jesus Barajas Camacho',
-        email: 'jesusbarcam@gmail.com',
-        tlf: 657448534,
-      },
-      {
-        username: 'davlinch',
-        fullName: 'David Sanchez Camino',
-        email: 'davidsanchez@gmail.com',
-        tlf: 657448534,
-      },
-      {
-        username: 'anluz',
-        fullName: 'Angel Luis Gutierrez',
-        email: 'angelluis@gmail.com',
-        tlf: 657448534,
-      },
-      {
-        username: 'yegui',
-        fullName: 'Sergio Araujo',
-        email: 'yegui@gmail.com',
-        tlf: 657448534,
-      },
-    ];
+    const usersList = await collection.find().toArray();
+    if (usersList.length === 0) {
+      reply.code(404);
+      throw new Error('No Document found');
+    } // If
+    return usersList;
   });
 };
