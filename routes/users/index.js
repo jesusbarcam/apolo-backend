@@ -8,7 +8,6 @@ const {
   createUser,
   createUserResponseSchema,
 } = require('./users.schema');
-const ObjectId = require('mongodb').ObjectID;
 
 module.exports = async function (fastify, options) {
   const collection = fastify.mongo.db.collection('users');
