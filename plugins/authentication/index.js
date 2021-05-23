@@ -1,11 +1,13 @@
 'use strict';
 
-const fp = require('fastify-plugin');
+const fplugin = require('fastify-plugin');
 const secretWord = 'supersecret';
 
 async function authentication(fastify, options) {
   fastify
-    .register(require('fastify-jwt'), { secret: secretWord })
+    .register(require('fastify-jwt'), {
+      secret: secretWord,
+    })
     .decorate('validateJWT', async (request, reply) => {
       try {
         await request.jwtVerify();
@@ -36,4 +38,4 @@ async function authentication(fastify, options) {
     });
 }
 
-module.exports = fp(authentication);
+module.exports = fplugin(authentication);
