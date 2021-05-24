@@ -4,21 +4,20 @@
 const {
   publicUser,
   publicUsers,
-  usersResponseSchema,
-  createUser,
-  createUserResponseSchema,
+  createUserValidate,
 } = require('./users.schema');
 
 module.exports = async function (fastify, options) {
   const collection = fastify.mongo.db.collection('users');
-
   fastify.addSchema(publicUser);
   fastify.addSchema(publicUsers);
-  fastify.addSchema(createUser);
-
+  fastify.addSchema(createUserValidate);
   fastify.post(
     '/users',
-    { preValidation: [fastify.validateJWT] },
+    {
+      preValidation: [fastify.validateJWT],
+      schema: { body: { $ref: 'createUserValidate#' } },
+    },
     async (request, reply) => {
       const userToInsert = { ...request.body };
       fastify.log.info(
@@ -60,7 +59,14 @@ module.exports = async function (fastify, options) {
   // añadirlos a traves de un servicio usersService
   fastify.get(
     '/userslist',
-    { preValidation: [fastify.validateJWT] },
+    {
+      preValidation: [fastify.validateJWT],
+      schema: {
+        response: {
+          200: { $ref: 'publicUsers#' },
+        },
+      },
+    },
     async (request, reply) => {
       const usersList = await collection.find().toArray();
       if (usersList.length === 0) {
@@ -73,7 +79,14 @@ module.exports = async function (fastify, options) {
 
   fastify.get(
     '/users/:username',
-    { preValidation: [fastify.validateJWT] },
+    {
+      preValidation: [fastify.validateJWT],
+      schema: {
+        response: {
+          200: { $ref: 'publicUser#' },
+        },
+      },
+    },
     async (request, reply) => {
       const requestedUser = await collection.findOne({
         username: request.params.username,
