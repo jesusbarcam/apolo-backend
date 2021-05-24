@@ -1,22 +1,14 @@
-const USER_ID = 'publicUser';
-const CREATE_USER_ID = 'createUser';
-const USER_LIST_ID = 'publicUsers';
-
-const USER_LIST_REF = `${USER_LIST_ID}#`;
-const USER_REF = `${USER_ID}#`;
-const CREATE_USER_REF = `${CREATE_USER_ID}#`;
-
 /**
  * @schema public
  * @description
  */
 const publicUser = {
-  $id: USER_ID,
+  $id: 'publicUser',
   type: 'object',
   properties: {
     username: { type: 'string' },
     email: { type: 'string' },
-    tlf: { type: 'number' },
+    fullname: { type: 'string' },
   },
 }; // PublicUser
 
@@ -25,55 +17,29 @@ const publicUser = {
  * @description
  */
 const publicUsers = {
-  $id: USER_LIST_ID,
+  $id: 'publicUsers',
   type: 'array',
-  items: { $ref: USER_REF },
+  items: { $ref: 'publicUser#' },
 }; // PublicUsers
 
 /**
  * @schema public
  * @description
  */
-const createUser = {
-  $id: CREATE_USER_ID,
+const createUserValidate = {
+  $id: 'createUserValidate',
+  required: ['username', 'password', 'fullname', 'email'],
   type: 'object',
   properties: {
     username: { type: 'string' },
     password: { type: 'string' },
     fullName: { type: 'string' },
+    email: { type: 'string' },
   },
 };
 
-/**
- * @schema response
- * @description
- */
-const usersResponseSchema = {
-  schema: {
-    response: {
-      200: { $ref: USER_LIST_REF },
-    },
-  },
-}; // UsersSchema
-
-/**
- * @schema response
- * @description
- */
-const createUserResponseSchema = {
-  schema: {
-    response: {
-      201: { $ref: USER_REF },
-    },
-  },
-}; // CreateUserResponseSchema
-
 module.exports = {
-  USER_LIST_REF,
-  USER_REF,
   publicUser,
   publicUsers,
-  createUser,
-  usersResponseSchema,
-  createUserResponseSchema,
+  createUserValidate,
 };
