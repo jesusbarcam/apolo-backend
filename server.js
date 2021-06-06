@@ -7,6 +7,7 @@ const fastify = require('fastify')({
 });
 
 fastify.register(require('@plugins/mongo-db-connector'));
+fastify.register(require('@plugins/redis-db-connector'));
 
 // Declare all routes
 fastify.register(require('@plugins/authentication')).after(() => {

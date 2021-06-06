@@ -69,6 +69,7 @@ module.exports = async function (fastify, options) {
     },
     async (request, reply) => {
       const usersList = await collection.find().toArray();
+
       if (usersList.length === 0) {
         reply.code(404);
         throw new Error('No Document found');

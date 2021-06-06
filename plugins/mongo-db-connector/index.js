@@ -1,3 +1,5 @@
+'use strict';
+
 const fPlugin = require('fastify-plugin');
 
 async function dbConnector(fastify, options) {
